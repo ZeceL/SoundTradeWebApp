@@ -51,29 +51,31 @@
         <div class="equalizer">
             <canvas id="equalizerCanvas"></canvas>
         </div>
-        <div class="custom-audio-player">
-            <div class="song-info">
-                <img src="~/images/note-placeholder.png" asp-append-version="true" id="song-cover" alt="Обложка"/>
-                <div>
-                    <p id="song-title">Название песни</p>
-                    <p id="song-artist">Исполнитель</p>
+        <div class="player-wrapper"> 
+            <div class="custom-audio-player">
+                <div class="song-info">
+                    <img src="~/images/note-placeholder.png" asp-append-version="true" id="song-cover" alt="Обложка" />
+                    <div>
+                        <p id="song-title">Название песни</p>
+                        <p id="song-artist">Исполнитель</p>
+                    </div>
                 </div>
-            </div>
-            <audio id="audio" src=""></audio> @* Источник будет устанавливаться через JavaScript *@
-            <button id="playPause">▶</button>
-            <div class="progress-bar"> @* Удален onclick="setProgress(event)" - обработчик будет добавлен в script.js *@
-                <div class="progress" id="progress"></div>
-            </div>
-            <div class="volume-container">
-                <img src="~/images/volume-icon.png" asp-append-version="true" id="volume-icon" alt="Громкость"/>
-                <input
-                    type="range"
-                    class="volume-control"
-                    id="volumeControl" @* Добавим ID для удобства выбора в JS *@
-                    min="0"
-                    max="1"
-                    step="0.01"
-                    value="1" />
+                <audio id="audio" src=""></audio> @* Источник будет устанавливаться через JavaScript *@
+                <button id="playPause">▶</button>
+                <div class="progress-bar">
+                    @* Удален onclick="setProgress(event)" - обработчик будет добавлен в script.js *@
+                    <div class="progress" id="progress"></div>
+                </div>
+                <div class="volume-container">
+                    <img src="~/images/volume-icon.png" asp-append-version="true" id="volume-icon" alt="Громкость" />
+                    <input type="range"
+                           class="volume-control"
+                           id="volumeControl" @* Добавим ID для удобства выбора в JS *@
+                           min="0"
+                           max="1"
+                           step="0.01"
+                           value="1" />
+                </div>
             </div>
         </div>
     </footer>

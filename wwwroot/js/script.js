@@ -14,6 +14,12 @@ document.addEventListener('DOMContentLoaded', function () {
         // return;
     }
 
+    //  Устанавливаем источник аудиофайла
+    audio.src = '/media/song.mp3';  //  Путь к вашему файлу
+    audio.load(); // Загружаем аудиоданные (важно!)
+
+
+
     const ctx = canvas.getContext('2d');
     // Устанавливаем размер canvas (можно оставить или адаптировать)
     const footerElement = document.querySelector('footer');
@@ -146,12 +152,5 @@ document.addEventListener('DOMContentLoaded', function () {
             audio.volume = e.target.value;
         });
     }
-
-    // --- Код для модальных окон и вкладок УДАЛЕН ---
-    // Функции openModal, closeModal, openTab и связанные обработчики удалены.
-
-    // --- Код для переключения контента в каталоге УДАЛЕН ---
-    // Обработчик для #toggleContent и связанных элементов удален,
-    // так как он теперь находится в @section Scripts в Views/Catalog/Index.cshtml
-
+    
 }); // Конец DOMContentLoaded

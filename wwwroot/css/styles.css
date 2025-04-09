@@ -9,10 +9,11 @@ body {
 	display: flex;
 	flex-direction: column;
 	min-height: 100vh;
-	font-family: Arial, sans-serif; /* Можете заменить на шрифт Bootstrap, если хотите единообразия */
+	font-family: Arial, sans-serif;
 	overflow-x: hidden;
-	background-color: #1a1a1a; /* Добавлен темный фон для всего сайта, если нужно */
-	color: #ccc; /* Основной цвет текста для темного фона */
+	background-color: #1a1a1a;
+	color: #ccc;
+	padding-bottom: 70px; /* Пример высоты футера */
 }
 
 /* Стили для Header */
@@ -148,20 +149,72 @@ main {
 
 /* Стили для Footer и Плеера */
 footer {
-	background: #111; /* Очень темный футер */
-	color: white;
-	padding-top: 10px; /* Небольшой отступ сверху перед эквалайзером */
-	position: sticky; /* Плеер будет "прилипать" к низу */
+	position: fixed;
 	bottom: 0;
+	left: 0;
 	width: 100%;
-	z-index: 1000; /* Чтобы плеер был поверх другого контента при прокрутке */
+	z-index: 1000;
+	background: #111;
+	color: white;
+	display: flex;
+	flex-direction: column;
+	padding: 0;
+	margin: 0;
+	height: 70px; /* Пример высоты футера */
+}
+/* Добавляем стили для обертки плеера */
+.player-wrapper {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%; /* Занимает всю высоту футера */
+	display: flex;
+	justify-content: center; /* Центрирование по горизонтали */
+	align-items: center; /* Центрирование по вертикали */
+	margin: 0;
+	padding: 0;
 }
 
+.custom-audio-player {
+	display: flex;
+	align-items: center;
+	padding: 10px 20px;
+	background: rgba(28, 28, 28, 0.8);
+	border-radius: 10px;
+	width: 80%;
+	max-width: 600px;
+	height: 100%; /* Плеер занимает всю высоту player-wrapper */
+	margin: 0;
+}
+
+/* Корректируем отступы элементов внутри плеера, так как justify-content: space-between убран */
+.song-info {
+	display: flex;
+	align-items: center;
+	margin-right: 20px; /* Отступ справа */
+}
+
+#playPause {
+	margin: 0 15px;
+}
+
+.progress-bar {
+	flex-grow: 1;
+	margin: 0 15px;
+}
+
+.volume-container {
+	margin-left: 15px; /* Отступ слева */
+}
+
+/* Остальные стили для .equalizer, .custom-audio-player и т.д. остаются без изменений */
 .equalizer {
 	width: 100%;
-	height: 50px; /* Уменьшим высоту для эквалайзера */
-	background: #181818; /* Фон под эквалайзером */
-	margin-bottom: 5px;
+	height: 100%; /* Эквалайзер занимает всю высоту футера */
+	background: #181818;
+	margin: 0;
+	padding: 0;
 }
 
 #equalizerCanvas {
@@ -173,9 +226,13 @@ footer {
 .custom-audio-player {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
 	padding: 10px 20px;
-	background: #1c1c1c; /* Фон панели управления плеером */
+	background: rgba(28, 28, 28, 0.8);
+	border-radius: 10px;
+	width: 80%;
+	max-width: 600px;
+	height: calc(100% - 50px - 10px); /* Высота плеера (120px - 50px - 10px = 60px) */
+	margin: 0;
 }
 
 .song-info {
@@ -245,19 +302,6 @@ footer {
 	border-radius: 4px;
 	transition: width 0.1s linear; /* Плавное изменение ширины */
 }
-
-/* Можно добавить "кружок" на конце прогресса */
- .progress::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: -3px;
-    width: 14px;
-    height: 14px;
-    background-color: white;
-    border-radius: 50%;
-    transform: translateX(50%);
-} 
 
 
 .volume-container {
@@ -448,86 +492,201 @@ input[type='range'].volume-control {
 				transform: scale(0.95);
 			}
 
-/* Стили для форм Login/Register */
-/* Эти стили будут применяться, только если вы хотите
-   переопределить стандартные стили Bootstrap для форм,
-   чтобы они лучше вписывались в вашу темную тему.
-   Если стандартный вид Bootstrap вас устраивает, эти стили НЕ НУЖНЫ. */
+/* ========================================== */
+/* Стили для страниц Входа и Регистрации    */
+/* ========================================== */
 
-/* Пример переопределения стилей Bootstrap для форм под темную тему */
-
-.account-page-content { // Добавьте этот класс к обертке на страницах Login/Register
-    max-width: 500px;
-    margin: 30px auto;
-    padding: 30px;
-    background-color: #2a2a2a;
-    border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.5);
-}
-.account-page-content h2 {
-    color: #eee;
-    text-align: center;
-    margin-bottom: 25px;
-}
-.account-page-content .form-group label {
-    color: #ccc;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-.account-page-content .form-control {
-    background-color: #333;
-    border: 1px solid #555;
-    color: #eee;
-    border-radius: 4px;
-}
-.account-page-content .form-control:focus {
-    background-color: #444;
-    border-color: #4CAF50;
-    color: #fff;
-    box-shadow: none; // Убрать стандартную тень Bootstrap
-}
-.account-page-content .form-control::placeholder { // Стиль плейсхолдера
-    color: #888;
-}
-.account-page-content .btn-primary { // Переопределение основной кнопки Bootstrap
-    background-color: #4CAF50;
-    border-color: #4CAF50;
-    padding: 10px 20px;
-    font-size: 1.1em;
-    width: 100%; // Кнопка на всю ширину
-    margin-top: 15px;
-}
-.account-page-content .btn-primary:hover {
-    background-color: #45a049;
-    border-color: #45a049;
-}
-.account-page-content .form-check-label {
-    color: #ccc;
-}
-.account-page-content .form-check-input {
-     background-color: #555; // Фон для чекбокса/радио
-     border-color: #777;
-}
-.account-page-content .form-check-input:checked {
-     background-color: #4CAF50; // Цвет при выборе
-     border-color: #4CAF50;
-}
-.account-page-content a { // Ссылки под формой
-    color: #4CAF50;
-    text-decoration: none;
-}
-.account-page-content a:hover {
-    text-decoration: underline;
-}
-.account-page-content .text-danger { // Цвет текста ошибок валидации
-     color: #ff6b6b !important; // Используем !important, если Bootstrap перебивает
-}
-.account-page-content .alert-success { // Сообщение об успехе
-    background-color: #2f5e32;
-    color: #d4edda;
-    border-color: #3a743d;
+/* Общий контейнер для формы */
+.account-form-container {
+	max-width: 550px; /* Максимальная ширина контейнера формы */
+	margin: 40px auto; /* Отступы сверху/снизу и авто по бокам для центрирования */
+	padding: 30px 40px; /* Внутренние отступы */
+	background-color: #282828; /* Темный фон контейнера (как у элементов списка на главной) */
+	border-radius: 8px; /* Скругление углов */
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); /* Тень для объема */
+	border: 1px solid #444; /* Тонкая рамка */
 }
 
+	/* Заголовок формы (h2) */
+	.account-form-container h2 {
+		color: #eee; /* Светлый цвет заголовка */
+		text-align: center; /* Центрирование */
+		margin-bottom: 25px; /* Отступ снизу */
+		font-weight: bold;
+	}
 
-/* --- Стили для модальных окон УДАЛЕНЫ --- */
-/* Стили для .modal, .modal-content, .close, .tab, .tablinks, .tabcontent удалены */
+	/* Подзаголовок (h4) */
+	.account-form-container h4 {
+		color: #bbb;
+		text-align: center;
+		margin-bottom: 10px;
+		font-weight: normal;
+		font-size: 1.1em;
+	}
+
+	/* Горизонтальная линия (hr) */
+	.account-form-container hr {
+		border-color: #444; /* Цвет линии */
+		margin-bottom: 25px;
+	}
+
+	/* Группа формы (Bootstrap .form-group или просто div с отступом) */
+	.account-form-container .form-group,
+	.account-form-container .mb-3 /* Поддержка стандартных отступов Bootstrap */ {
+		margin-bottom: 20px; /* Увеличим отступ между полями */
+	}
+
+	/* Метки (label) */
+	.account-form-container label {
+		color: #ccc; /* Светлый цвет метки */
+		margin-bottom: 8px; /* Отступ снизу */
+		font-weight: bold; /* Полужирный шрифт */
+		display: block; /* Метка над полем */
+	}
+
+	/* Поля ввода (input), select */
+	.account-form-container .form-control {
+		display: block; /* Убедимся, что элемент блочный */
+		width: 100%; /* Занимает всю доступную ширину */
+		visibility: visible; /* Явно видимый */
+		opacity: 1; /* Явно непрозрачный */
+		height: auto; /* Автоматическая высота */
+		background-color: #333; /* Темный фон поля */
+		border: 1px solid #555; /* Рамка поля */
+		color: #eee !important; /* СВЕТЛЫЙ цвет вводимого текста (ВАЖНО: добавлен !important для теста) */
+		border-radius: 4px;
+		padding: 10px 12px;
+		margin-bottom: 0; /* Убираем лишний нижний отступ у самого инпута, если он был */
+		transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+	}
+
+		.account-form-container .form-control:focus {
+			background-color: #404040;
+			border-color: #4CAF50;
+			color: #fff !important; /* Белый текст при фокусе (ВАЖНО: добавлен !important для теста) */
+			box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+			outline: none;
+		}
+		/* Стиль плейсхолдера */
+		.account-form-container .form-control::placeholder {
+			color: #888;
+			opacity: 1;
+		}
+	/* Дополнительно: Убедимся, что группа формы видима */
+	.account-form-container .form-group,
+	.account-form-container .mb-3 {
+		display: block; /* Или другой нужный display */
+		visibility: visible;
+		opacity: 1;
+		margin-bottom: 20px; /* Восстанавливаем отступ */
+	}
+	/* Стили для radio и checkbox */
+	.account-form-container .form-check-label {
+		color: #ccc; /* Цвет текста метки */
+		font-weight: normal; /* Обычный шрифт */
+	}
+
+	.account-form-container .form-check-input {
+		background-color: #555; /* Фон для чекбокса/радио */
+		border: 1px solid #777; /* Рамка */
+		cursor: pointer;
+		transform: scale(1.2); /* Увеличение размера (подберите значение) */
+	}
+
+		.account-form-container .form-check-input:focus {
+			border-color: #4CAF50;
+			box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+			outline: none;
+		}
+
+		.account-form-container .form-check-input:checked {
+			background-color: #4CAF50; /* Цвет при выборе */
+			border-color: #4CAF50;
+		}
+			/* Стиль "галочки" или точки */
+			.account-form-container .form-check-input:checked[type=checkbox] {
+				background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e"); /* Белая галочка */
+			}
+
+			.account-form-container .form-check-input:checked[type=radio] {
+				background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2' fill='%23fff'/%3e%3c/svg%3e"); /* Белая точка */
+			}
+
+	.account-form-container .form-group div { /* Стили для контейнера радиокнопок */
+		display: flex; /* Используем Flexbox */
+		align-items: baseline; /* Выравнивание по вертикали */
+	}
+
+	.account-form-container .form-check-input {
+		margin-right: 5px; /* Отступ справа от радиокнопки */
+	}
+
+	.account-form-container .form-check-label {
+		margin-right: 15px; /* Отступ справа от метки */
+		display: inline-block; /* Или inline-block */
+	}
+
+	/* Кнопка отправки формы (переопределяем .btn-primary внутри контейнера) */
+	.account-form-container .btn-primary {
+		background-color: #4CAF50; /* Зеленый фон (акцентный) */
+		border-color: #4CAF50; /* Зеленая рамка */
+		color: white; /* Белый текст */
+		padding: 12px 20px; /* Увеличенные отступы */
+		font-size: 1.1em; /* Крупнее шрифт */
+		font-weight: bold;
+		width: 100%; /* Кнопка на всю ширину контейнера */
+		margin-top: 15px; /* Отступ сверху */
+		border-radius: 5px;
+		transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+	}
+
+		.account-form-container .btn-primary:hover {
+			background-color: #45a049; /* Чуть темнее при наведении */
+			border-color: #45a049;
+			filter: brightness(1.1);
+		}
+
+		.account-form-container .btn-primary:active {
+			transform: scale(0.98); /* Эффект нажатия */
+		}
+
+	/* Ссылки под формой (Регистрация, Войти, Забыли пароль?) */
+	.account-form-container p { /* Стиль для параграфов со ссылками */
+		text-align: center;
+		margin-top: 20px;
+	}
+
+		.account-form-container p a {
+			color: #4CAF50; /* Зеленый цвет ссылки */
+			text-decoration: none; /* Без подчеркивания */
+			transition: color 0.2s;
+		}
+
+			.account-form-container p a:hover {
+				color: #81c784; /* Светлее при наведении */
+				text-decoration: underline; /* Подчеркивание при наведении */
+			}
+
+	/* Сообщения об ошибках валидации */
+	.account-form-container .text-danger,
+	.account-form-container .validation-summary-errors ul { /* Для summary тоже */
+		color: #ff8a8a !important; /* Светло-красный цвет для ошибок (важно для переопределения Bootstrap) */
+		font-size: 0.9em; /* Чуть меньше шрифт */
+		list-style: none; /* Убрать маркеры у списка summary */
+		padding-left: 0; /* Убрать отступ у списка summary */
+	}
+
+	.account-form-container .validation-summary-errors {
+		margin-bottom: 15px;
+	}
+
+	/* Сообщение об успешной регистрации (на странице Login) */
+	.account-form-container .alert-success {
+		background-color: rgba(76, 175, 80, 0.15); /* Полупрозрачный зеленый фон */
+		color: #a5d6a7; /* Светло-зеленый текст */
+		border: 1px solid rgba(76, 175, 80, 0.3); /* Полупрозрачная зеленая рамка */
+		border-radius: 4px;
+		padding: 15px;
+		margin-bottom: 20px;
+		text-align: center;
+	}
