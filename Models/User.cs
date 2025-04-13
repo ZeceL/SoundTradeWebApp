@@ -21,5 +21,8 @@ namespace SoundTradeWebApp.Models
         [Required(ErrorMessage = "Требуется тип пользователя")]
         [StringLength(50)]
         public string UserType { get; set; } = string.Empty; // "Buyer" или "Author"
+
+        // Коллекция треков, загруженных этим пользователем
+        public virtual ICollection<Track> Tracks { get; set; } = new List<Track>();
     }
 }

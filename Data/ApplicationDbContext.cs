@@ -13,6 +13,8 @@ namespace SoundTradeWebApp.Data
         // DbSet представляет таблицу Users в базе данных
         public DbSet<User> Users { get; set; }
 
+        public DbSet<Track> Tracks { get; set; }
+
         // Здесь можно добавить DbSet для других сущностей (песни, тексты и т.д.)
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
