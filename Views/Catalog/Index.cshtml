@@ -8,7 +8,21 @@
 
     <button id="toggleContent">Переключить на тексты песен</button>
     <div class="filter-controls">
-        @* ... элементы фильтров ... *@
+        <label for="genre">Жанр:</label>
+        <select id="genre">
+            <option value="all">Все</option>
+            <option value="pop">Поп</option>
+            <option value="rock">Рок</option>
+            <option value="hiphop">Хип-хоп</option>
+        </select>
+
+        <label for="vocal">Вокал:</label>
+        <select id="vocal">
+            <option value="all">Все</option>
+            <option value="male">Мужской</option>
+            <option value="female">Женский</option>
+            <option value="universal">Универсальный</option>
+        </select>
         <button id="applyFilters">Применить фильтры</button>
     </div>
 

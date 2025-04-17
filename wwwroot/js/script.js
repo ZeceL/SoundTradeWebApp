@@ -1,10 +1,12 @@
+console.log("Скрипт script.js загружен!");
+
 document.addEventListener('DOMContentLoaded', function () {
     // --- Аудиоплеер и эквалайзер (Код в основном сохранен) ---
     const audio = document.getElementById('audio');
     const playPauseButton = document.getElementById('playPause');
-    const progressContainer = document.querySelector('.progress-bar'); // Используем класс
+    const progressContainer = document.querySelector('.progress-bar');
     const progress = document.getElementById('progress');
-    const volumeControl = document.getElementById('volumeControl'); // Используем ID, добавленный в _Layout
+    const volumeControl = document.getElementById('volumeControl');
     const canvas = document.getElementById('equalizerCanvas');
 
     // Проверяем наличие всех элементов перед началом работы
@@ -14,19 +16,13 @@ document.addEventListener('DOMContentLoaded', function () {
         // return;
     }
 
-    //  Устанавливаем источник аудиофайла
-    audio.src = '/media/song.mp3';  //  Путь к вашему файлу
-    audio.load(); // Загружаем аудиоданные (важно!)
-
-
-
     const ctx = canvas.getContext('2d');
     // Устанавливаем размер canvas (можно оставить или адаптировать)
     const footerElement = document.querySelector('footer');
     if (footerElement) {
         canvas.width = footerElement.offsetWidth;
     } else {
-        canvas.width = window.innerWidth; // Запасной вариант
+        canvas.width = window.innerWidth;  // Запасной вариант
     }
     canvas.height = 100; // Высота эквалайзера
 
@@ -35,25 +31,24 @@ document.addEventListener('DOMContentLoaded', function () {
     let dataArray;
     let source;
     let isAudioContextInitialized = false; // Флаг для однократной инициализации
+    let animationFrameId; // Для хранения ID requestAnimationFrame
 
-    // Функция инициализации AudioContext (вызывается при первом воспроизведении)
-    function initAudioContextIfNeeded() {
+    // Функция инициализации AudioContext
+    function initAudioContext() {
         if (!isAudioContextInitialized && audioContext === undefined) {
             try {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 analyser = audioContext.createAnalyser();
-                analyser.fftSize = 128; // Количество полос эквалайзера (степень двойки)
-                dataArray = new Uint8Array(analyser.frequencyBinCount); // Массив для данных частот
+                analyser.fftSize = 128;
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
 
-                source = audioContext.createMediaElementSource(audio); // Создаем источник из <audio>
-                source.connect(analyser); // Подключаем анализатор к источнику
-                analyser.connect(audioContext.destination); // Подключаем анализатор к выходу звука
+                source = audioContext.createMediaElementSource(audio);
+                source.connect(analyser);
+                analyser.connect(audioContext.destination);
                 isAudioContextInitialized = true;
                 console.log("AudioContext инициализирован.");
-                drawEqualizer(); // Начинаем рисовать эквалайзер после инициализации
             } catch (e) {
                 console.error("Ошибка инициализации AudioContext:", e);
-                // Можно скрыть canvas, если контекст не создался
                 if (canvas) canvas.style.display = 'none';
             }
         }
@@ -68,44 +63,57 @@ document.addEventListener('DOMContentLoaded', function () {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
             }
             // Запрашиваем следующий кадр, чтобы очистка сработала, если плеер остановили
-            if (isAudioContextInitialized) requestAnimationFrame(drawEqualizer);
+            if (isAudioContextInitialized) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = requestAnimationFrame(drawEqualizer);
+            }
             return;
         }
 
-        requestAnimationFrame(drawEqualizer); // Запрашиваем следующий кадр анимации
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = requestAnimationFrame(drawEqualizer);
 
-        analyser.getByteFrequencyData(dataArray); // Получаем данные частот
+        analyser.getByteFrequencyData(dataArray);
 
-        ctx.clearRect(0, 0, canvas.width, canvas.height); // Очищаем canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        const barWidth = (canvas.width / dataArray.length) * 1.5; // Ширина столбика
+        const barWidth = (canvas.width / dataArray.length) * 1.5;
         let barHeight;
-        let x = 0; // Позиция столбика по X
+        let x = 0;
 
-        // Рисуем столбики эквалайзера
         for (let i = 0; i < dataArray.length; i++) {
-            barHeight = dataArray[i] * 0.4; // Масштабируем высоту (подбирается экспериментально)
+            barHeight = dataArray[i] * 0.4;
 
-            // Задаем цвет столбика (можно сделать градиент или зависящим от высоты)
             const red = barHeight + 50 * (i / dataArray.length);
             const green = 150 * (i / dataArray.length);
             const blue = 50;
             ctx.fillStyle = 'rgb(' + red + ',' + green + ',' + blue + ')';
+            ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
 
-            ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight); // Рисуем столбик
-
-            x += barWidth + 1; // Сдвигаем позицию для следующего столбика
+            x += barWidth + 1;
         }
+    }
+
+    // Инициализация AudioContext при загрузке метаданных аудио
+    if (audio) {
+        audio.addEventListener('loadedmetadata', () => {
+            initAudioContext();
+        });
+
+        // Автоматическое воспроизведение и запуск эквалайзера
+        audio.addEventListener('play', () => {
+            if (isAudioContextInitialized) {
+                drawEqualizer();
+            }
+        });
     }
 
     // Обработчик кнопки Play/Pause
     if (playPauseButton && audio) {
         playPauseButton.addEventListener('click', () => {
-            initAudioContextIfNeeded(); // Инициализируем AudioContext при первом нажатии Play
             if (audio.paused) {
                 audio.play().then(() => {
                     playPauseButton.textContent = '❚❚'; // Пауза
-                    if (isAudioContextInitialized) drawEqualizer(); // Начать рисовать эквалайзер
                 }).catch(error => console.error("Ошибка воспроизведения:", error));
             } else {
                 audio.pause();
@@ -118,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (audio && progress) {
         audio.addEventListener('timeupdate', () => {
             const progressPercent = (audio.currentTime / audio.duration) * 100;
-            if (isFinite(progressPercent)) { // Проверка на NaN или Infinity
+            if (isFinite(progressPercent)) {
                 progress.style.width = progressPercent + '%';
             } else {
                 progress.style.width = '0%';
@@ -129,22 +137,17 @@ document.addEventListener('DOMContentLoaded', function () {
     // Перемотка по клику на progress bar
     if (progressContainer && audio) {
         progressContainer.addEventListener('click', function (event) {
-            // Проверяем, есть ли длительность у аудиофайла
             if (!audio.duration || !isFinite(audio.duration)) return;
 
-            // Вычисляем позицию клика относительно progressContainer
-            const rect = this.getBoundingClientRect(); // Получаем размеры и позицию элемента
-            const clickX = event.clientX - rect.left; // Координата X клика внутри элемента
-            const width = this.offsetWidth; // Ширина элемента
+            const rect = this.getBoundingClientRect();
+            const clickX = event.clientX - rect.left;
+            const width = this.offsetWidth;
 
-            // Вычисляем, на какую долю длительности нужно перемотать
             const durationFraction = clickX / width;
 
-            // Устанавливаем новое время воспроизведения
             audio.currentTime = audio.duration * durationFraction;
         });
     }
-
 
     // Регулировка громкости
     if (volumeControl && audio) {
@@ -152,5 +155,31 @@ document.addEventListener('DOMContentLoaded', function () {
             audio.volume = e.target.value;
         });
     }
-    
+
+    // Обработчики событий для отслеживания ухода со страницы
+    // Заменяем unload и beforeunload на visibilitychange и pagehide
+    document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+            // Страница стала невидимой (например, переключение вкладок)
+            // Здесь можно добавить код для сохранения состояния аудио, если это необходимо
+            // Например, audio.pause();
+            console.log("Страница стала невидимой");
+        } else {
+            // Страница снова видима
+            // Здесь можно добавить код для восстановления состояния, если это необходимо
+            console.log("Страница снова видима");
+        }
+    });
+
+    window.addEventListener('pagehide', function (event) {
+        if (event.persisted) {
+            // Страница кэшируется браузером (back/forward cache)
+            console.log("Страница будет взята из кэша");
+        } else {
+            // Страница выгружается полностью
+            // Здесь можно добавить код для финализации работы с аудио, если это необходимо
+            // Например, audio.pause();
+            console.log("Страница выгружается");
+        }
+    });
 }); // Конец DOMContentLoaded
